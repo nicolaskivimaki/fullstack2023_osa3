@@ -5,8 +5,8 @@ const app = express()
 const cors = require('cors')
 const Person = require('./models/person')
 
-morgan.token('data', (req, res) => {
-    return JSON.stringify(req.body)
+morgan.token('data', (req) => {
+  return JSON.stringify(req.body)
 })
 
 app.use(cors())
@@ -23,17 +23,17 @@ app.get('/api/persons', (request, response) => {
 app.get('/info', (request, response) => {
   Person.countDocuments({})
     .then(count => {
-      const currentDate = new Date();
-      response.send(`<div>Phonebook has info for ${count} people <br> ${currentDate}</div>`);
+      const currentDate = new Date()
+      response.send(`<div>Phonebook has info for ${count} people <br> ${currentDate}</div>`)
     })
     .catch(error => {
-      console.error(error);
-      response.status(500).send('Error fetching data from the database');
+      console.error(error)
+      response.status(500).send('Error fetching data from the database')
     })
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
-    Person.findById(request.params.id)
+  Person.findById(request.params.id)
     .then(person => {
       if (person) {
         response.json(person)
@@ -45,16 +45,16 @@ app.get('/api/persons/:id', (request, response, next) => {
 })
 
 app.post('/api/persons', (request, response, next) => {
-    const body = request.body
+  const body = request.body
 
-    const person = new Person ({
-        name: body.name,
-        number: body.number,
-    })
+  const person = new Person ({
+    name: body.name,
+    number: body.number,
+  })
 
-    person.save().then(savedPerson => {
-      response.json(savedPerson)
-    })
+  person.save().then(savedPerson => {
+    response.json(savedPerson)
+  })
     .catch(error => next(error))
 })
 
@@ -74,10 +74,10 @@ app.put('/api/persons/:id', (request, response, next) => {
 
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndRemove(request.params.id)
-  .then(result => {
-    response.status(204).end()
-  })
-  .catch(error => next(error))
+    .then(() => {
+      response.status(204).end()
+    })
+    .catch(error => next(error))
 })
 
 const errorHandler = (error, request, response, next) => {
@@ -86,7 +86,7 @@ const errorHandler = (error, request, response, next) => {
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
   } else if (error.name === 'ValidationError') {
-  return response.status(400).json({ error: error.message })
+    return response.status(400).json({ error: error.message })
   }
 
   next(error)

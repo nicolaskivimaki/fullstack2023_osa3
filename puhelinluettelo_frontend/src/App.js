@@ -138,7 +138,6 @@ const App = () => {
             }, 5000)
             setPersons(persons.filter(n => n.id !== person.id))
           })
-          
       }
     } else {
       personService
@@ -151,13 +150,17 @@ const App = () => {
             message: `Added ${newName}`,
             color: 'green'
           })
-          setTimeout(() => {
-            setErrorMessage(null)
-          }, 5000)
+        })
+        .catch(error => {
+          setErrorMessage({
+            message: `${error.response.data.error}`,
+            color: 'red'
+          })
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
         })
     }}
-    
-  
 
   const personsToShow = persons.filter(person => person.name.includes(nameSearch))
 
